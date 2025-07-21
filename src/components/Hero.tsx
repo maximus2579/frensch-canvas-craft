@@ -45,8 +45,8 @@ const Hero = () => {
             
             <Button 
               size="lg" 
-              variant="outline" 
-              className="border-white text-white hover:bg-white hover:text-primary text-lg px-8 py-6"
+              variant="hero"
+              className="text-lg px-8 py-6"
               onClick={() => window.open("tel:+31123456789", "_self")}
             >
               <Phone className="mr-2 h-5 w-5" />
