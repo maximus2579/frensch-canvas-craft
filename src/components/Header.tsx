@@ -23,11 +23,11 @@ const Header = () => {
               alt="Schildersbedrijf Frensch Logo" 
               className="h-12 w-auto"
             />
-            <div className="ml-3 hidden sm:block">
-              <p className="text-sm font-medium text-foreground italic">
-                Kwaliteit is waar wij voor staan!
-              </p>
-            </div>
+            <img 
+              src="/lovable-uploads/786fc31a-aa73-441a-945d-4b555c2505ad.png" 
+              alt="Kwaliteit is waar wij voor staan" 
+              className="h-8 w-auto ml-3 hidden sm:block"
+            />
           </div>
 
           {/* Desktop Navigation */}
