@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, ImagePlus, X } from "lucide-react";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -18,12 +18,34 @@ const Contact = () => {
     message: ""
   });
 
+  const [photos, setPhotos] = useState<File[]>([]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+  };
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const remainingSlots = 10 - photos.length;
+    
+    if (files.length > remainingSlots) {
+      toast({
+        title: "Maximaal 10 foto's",
+        description: `U kunt nog ${remainingSlots} foto('s) toevoegen.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setPhotos(prev => [...prev, ...files].slice(0, 10));
+  };
+
+  const removePhoto = (index: number) => {
+    setPhotos(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -44,6 +66,7 @@ const Contact = () => {
       service: "",
       message: ""
     });
+    setPhotos([]);
   };
 
   const contactInfo = [
@@ -171,6 +194,53 @@ const Contact = () => {
                     placeholder="Beschrijf uw project zo gedetailleerd mogelijk..."
                     rows={4}
                   />
+                </div>
+
+                <div>
+                  <Label htmlFor="photos">Foto's (max. 10)</Label>
+                  <div className="mt-2">
+                    <label 
+                      htmlFor="photos" 
+                      className="flex items-center justify-center w-full p-6 border-2 border-dashed border-input rounded-md cursor-pointer hover:border-primary transition-colors"
+                    >
+                      <div className="text-center">
+                        <ImagePlus className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                          Klik om foto's toe te voegen ({photos.length}/10)
+                        </p>
+                      </div>
+                    </label>
+                    <input
+                      id="photos"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handlePhotoChange}
+                      className="hidden"
+                      disabled={photos.length >= 10}
+                    />
+                  </div>
+
+                  {photos.length > 0 && (
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                      {photos.map((photo, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={URL.createObjectURL(photo)}
+                            alt={`Preview ${index + 1}`}
+                            className="w-full h-32 object-cover rounded-md"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removePhoto(index)}
+                            className="absolute top-2 right-2 p-1 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <Button type="submit" size="lg" className="w-full">
